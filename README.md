@@ -1,5 +1,7 @@
 # C BMP
 
+[![Build Status](https://travis-ci.org/mattflow/cbmp.svg?branch=master)](https://travis-ci.org/mattflow/cbmp)
+
 C Library to read, manipulate, and save BMP images.
 
 Image must be a valid BMP format with 24 or 34 bit pixel data.
