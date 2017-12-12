@@ -4,7 +4,7 @@
 
 C Library to read, manipulate, and save BMP images.
 
-Image must be a valid BMP format with 24 or 34 bit pixel data.
+Image must be a valid BMP format with 24 or 32 bit pixel data.
 
 ## Usage
 
