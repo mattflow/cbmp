@@ -25,3 +25,6 @@ target_link_libraries(
   tests
   gtest_main
 )
+
+enable_testing()
+add_test(CBMPTests tests)
