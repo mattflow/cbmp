@@ -107,7 +107,7 @@ cd build
 Run `cmake`:
 
 ```sh
-cmake ...
+cmake ..
 ```
 
 Run the `tests` executable:
