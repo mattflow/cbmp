@@ -104,10 +104,15 @@ mkdir build
 cd build
 ```
 
-Run `cmake`:
+Generate `Makefile`s with `cmake`:
 
 ```sh
 cmake ..
+```
+
+Build executable:
+```
+make
 ```
 
 Run the `tests` executable:
