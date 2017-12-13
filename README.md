@@ -18,8 +18,8 @@ This example reads a BMP image and applies an invert to the pixels. It
 then saves the inverted image to a new file.
 
 ```c
-#include "stdlib.h"
-#include "stdio.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include "cbmp.h"
 
 int main(int argc, char** argv)
