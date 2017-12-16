@@ -64,6 +64,44 @@ TEST(CBMPTests, CorrectPixels)
     }
 }
 
+TEST(CBMPTests, DeepCopy)
+{
+    BMP* copy = b_deep_copy(bmp);
+    EXPECT_EQ(copy->file_byte_number, bmp->file_byte_number);
+    EXPECT_EQ(copy->pixel_array_start, bmp->pixel_array_start);
+    EXPECT_EQ(get_width(copy), get_width(bmp));
+    EXPECT_EQ(get_height(copy), get_height(bmp));
+    EXPECT_EQ(get_depth(copy), get_depth(bmp));
+
+    unsigned int i;
+    for (i = 0; i < copy->file_byte_number; i++)
+    {
+        EXPECT_EQ(copy->file_byte_contents[i], bmp->file_byte_contents[i]);
+    }
+
+    EXPECT_NE(copy->file_byte_contents, bmp->file_byte_contents);
+
+    unsigned char r, g, b, cr, cg, cb;
+    int x, y;
+    for (y = 0; y < get_height(copy); y++)
+    {
+        for (x = 0; x < get_width(copy); x++)
+        {
+            get_pixel_rgb(copy, x, y, &cr, &cg, &cb);
+            get_pixel_rgb(bmp, x, y, &r, &g, &b);
+
+            EXPECT_EQ(r, cr);
+            EXPECT_EQ(g, cg);
+            EXPECT_EQ(b, cb);
+        }
+    }
+
+    EXPECT_NE(copy->pixels, bmp->pixels);
+    EXPECT_NE(copy, bmp);
+
+    bclose(copy);
+}
+
 TEST(CBMPTests, FreeMemory)
 {
     bclose(bmp);

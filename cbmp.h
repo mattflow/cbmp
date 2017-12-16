@@ -34,6 +34,7 @@ typedef struct BMP_data
 // Public function declarations
 
 BMP* bopen(char* file_path);
+BMP* b_deep_copy(BMP* to_copy);
 int get_width(BMP* bmp);
 int get_height(BMP* bmp);
 unsigned int get_depth(BMP* bmp);

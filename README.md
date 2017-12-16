@@ -72,6 +72,9 @@ int main(int argc, char** argv)
 // Reads a BMP image and returns a poiner to a BMP struct
 BMP* bopen(char* file_path);
 
+// Returns a deep copy of the BMP passed
+BMP* b_deep_copy(BMP* to_copy);
+
 // Takes a BMP pointer and returns the image width in pixels
 int get_width(BMP* bmp);
 

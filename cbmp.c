@@ -74,6 +74,42 @@ BMP* bopen(char* file_path)
     return bmp;
 }
 
+BMP* b_deep_copy(BMP* to_copy)
+{
+    BMP* copy = (BMP*) malloc(sizeof(BMP));
+    copy->file_byte_number = to_copy->file_byte_number;
+    copy->pixel_array_start = to_copy->pixel_array_start;
+    copy->width = to_copy->width;
+    copy->height = to_copy->height;
+    copy->depth = to_copy->depth;
+
+    copy->file_byte_contents = (unsigned char*) malloc(copy->file_byte_number * sizeof(unsigned char));
+
+    unsigned int i;
+    for (i = 0; i < copy->file_byte_number; i++)
+    {
+        copy->file_byte_contents[i] = to_copy->file_byte_contents[i];
+    }
+
+    copy->pixels = (pixel*) malloc(copy->width * copy->height * sizeof(pixel));
+
+    unsigned int x, y;
+    int index;
+    for (y = 0; y < copy->height; y++)
+    {
+        for (x = 0; x < copy->width; x++)
+        {
+            index = y * copy->width + x;
+            copy->pixels[index].red = to_copy->pixels[index].red;
+            copy->pixels[index].green = to_copy->pixels[index].green;
+            copy->pixels[index].blue = to_copy->pixels[index].blue;
+            copy->pixels[index].alpha = to_copy->pixels[index].alpha;
+        }
+    }
+
+    return copy;
+}
+
 int get_width(BMP* bmp)
 {
     return bmp->width;
