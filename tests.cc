@@ -1,8 +1,5 @@
 #include "gtest/gtest.h"
-extern "C"
-{
-  #include "cbmp.h"
-}
+#include "cbmp.h"
 
 const int imageHeight = 2;
 const int imageWidth = 2;

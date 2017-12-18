@@ -1,6 +1,10 @@
 #ifndef CBMP_CBMP_H
 #define CBMP_CBMP_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Pixel structure
 // Not meant to be edited directly
 // Please use the API
@@ -42,5 +46,9 @@ void get_pixel_rgb(BMP* bmp, int x, int y, unsigned char* r, unsigned char* g, u
 void set_pixel_rgb(BMP* bmp, int x, int y, unsigned char r, unsigned char g, unsigned char b);
 void bwrite(BMP* bmp, char* file_name);
 void bclose(BMP* bmp);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // CBMP_CBMP_H
