@@ -47,6 +47,12 @@ void _get_pixel(BMP* bmp, int index, int offset, int channel);
 BMP* bopen(char* file_path)
 {
     FILE* fp = fopen(file_path, "rb");
+  
+    if (fp == NULL)
+    {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
 
     BMP* bmp = (BMP*) malloc(sizeof(BMP));
     bmp->file_byte_number = _get_file_byte_number(fp);
