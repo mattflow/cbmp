@@ -81,8 +81,8 @@ BMP* _decode_buffer(uint8_t* buffer) {
             bmp->width = _read_block(buffer, 18, 2);
             bmp->width = _read_block(buffer, 20, 2);
             break;
-        case 16: /* BITMAPCOREHEADER2 */
-        case 64: /* BITMAPCOREHEADER2 fallthrough */
+        case 64: /* BITMAPCOREHEADER2 */
+        case 16: /* BITMAPCOREHEADER2 fallthrough */
             bmp->width = _read_block(buffer, 18, 4);
             bmp->height = _read_block(buffer, 22, 4);
             bmp->color_planes = _read_block(buffer, 26, 2);
