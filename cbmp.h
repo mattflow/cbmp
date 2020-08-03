@@ -13,6 +13,8 @@ typedef struct {
     size_t size;
     int width;
     int height;
+    int offset;
+    int header_size;
     uint8_t* buffer;
 } BMP;
 
@@ -38,7 +40,7 @@ uint8_t* _get_file_buffer(char* filename) {
     }
 
     rewind(file);
-    uint8_t* buffer = (uint8_t*)malloc(sizeof(uint8_t) * size);
+    uint8_t* buffer = malloc(sizeof(uint8_t) * size);
     size_t fread_result = fread(buffer, sizeof(uint8_t), size, file);
     fclose(file);
 
@@ -49,6 +51,30 @@ uint8_t* _get_file_buffer(char* filename) {
     }
 
     return buffer;
+}
+
+int _read_block(uint8_t* buffer, int offset, int size) {
+    int result = 0;
+    int i;
+    for (i = 0; i < size; i++) {
+        int index = offset + i;
+        result = result | (buffer[index] << i);
+    }
+    return result;
+}
+
+BMP* _decode_buffer(uint8_t* buffer) {
+    BMP* bmp = malloc(sizeof(BMP));
+    bmp->size = _read_block(buffer, 2, 4);
+    bmp->offset = _read_block(buffer, 10, 4);
+    bmp->header_size = _read_block(buffer, 14, 4);
+    bmp->width = _read_block(buffer, 18, 4);
+    bmp->height = _read_block(buffer, 22, 4);
+    return bmp;
+}
+
+int _get_header_field(uint8_t* buffer) {
+    return (buffer[0] << 8) | buffer[1];
 }
 
 /* Public functions */
@@ -69,16 +95,20 @@ BMP* bmp_open(char* filename) {
         return NULL;
     }
 
-    BMP* bmp = (BMP*)malloc(sizeof(BMP));
-    bmp->buffer = buffer;
+    int header_field = _get_header_field(buffer);
 
-    /* First two bytes of BMP files are B and M respectively */
-    if (bmp->buffer[0] != 'B' || bmp->buffer[1] != 'M') {
-        /* Invalid argument */
-        errno = EINVAL;
-        bmp_close(bmp);
-        return NULL;
+    if (header_field != 0x424d && /* BM */
+        header_field != 0x4241 && /* BA */
+        header_field != 0x4349 && /* CI */
+        header_field != 0x4350 && /* CP */
+        header_field != 0x4943 && /* IC */
+        header_field != 0x5054) { /* PT */
+            free(buffer);
+            errno = EINVAL;
+            return NULL;
     }
+
+    BMP* bmp = _decode_buffer(buffer);
 
     return bmp;
 }

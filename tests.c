@@ -4,6 +4,7 @@
 #include "cbmp.h"
 
 #define EXPECTED_SIZE 78
+#define EXPECTED_HEADER_SIZE 40
 #define EXPECTED_WIDTH 3
 #define EXPECTED_HEIGHT 2
 
@@ -24,9 +25,10 @@ void test__get_file_buffer() {
 BMP* test_bmp_open() {
     printf("test_bmp_open: ");
     BMP* bmp = bmp_open("input.bmp");
-    /* assert(bmp->size == EXPECTED_SIZE); */
-    /* assert(bmp->width == EXPECTED_WIDTH); */
-    /* assert(bmp->height == EXPECTED_HEIGHT); */
+    assert(bmp->size == EXPECTED_SIZE);
+    assert(bmp->header_size == EXPECTED_HEADER_SIZE);
+    assert(bmp->width == EXPECTED_WIDTH);
+    assert(bmp->height == EXPECTED_HEIGHT);
 
     BMP* null_bmp = bmp_open("doesnt_exist.bmp");
     assert (null_bmp == NULL);
@@ -47,10 +49,13 @@ void test_bmp_close(BMP* bmp) {
 
 int main() {
     /* Test private functions */
+
     test__get_file_buffer();
 
     /* Test public functions */
+
     BMP* bmp = test_bmp_open();
     test_bmp_close(bmp);
+
     return EXIT_SUCCESS;
 }
