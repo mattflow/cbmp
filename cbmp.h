@@ -58,7 +58,7 @@ int _read_block(uint8_t* buffer, int offset, int size) {
     int i;
     for (i = 0; i < size; i++) {
         int index = offset + i;
-        result = result | (buffer[index] << i);
+        result = result | (buffer[index] << (i * 8));
     }
     return result;
 }
