@@ -1,21 +1,28 @@
 version: 2.1
 
 jobs:
-  tests:
+  gcc-10.2:
     docker:
-      - image: mattflow/cbmp-primary:10.2.0
+      - image: mattflow/cbmp-primary:10.2
     steps:
       - checkout
-      - run: make test
-  memory-check:
+      - run: make tests-full
+  gcc-9.3:
     docker:
-      - image: mattflow/cbmp-primary:10.2.0
+      - image: mattflow/cbmp-primary:9.3
     steps:
       - checkout
-      - run: make memory
+      - run: make tests-full
+  gcc-8.4:
+    docker:
+      - image: mattflow/cbmp-primary:8.4
+    steps:
+      - checkout
+      - run: make tests-full
 
 workflows:
   test:
     jobs:
-      - tests
-      - memory-check
+      - gcc-10.2
+      - gcc-9.3
+      - gcc-8.4

@@ -52,6 +52,5 @@ int main() {
     /* Test public functions */
     BMP* bmp = test_bmp_open();
     test_bmp_close(bmp);
-    assert(1 == 0);
     return EXIT_SUCCESS;
 }
