@@ -47,6 +47,18 @@ BMP* test_bmp_open() {
     return bmp;
 }
 
+void test_bmp_get_width(BMP* bmp) {
+    printf("test_bmp_get_width: ");
+    assert(bmp_get_width(bmp) == 3);
+    printf("PASSED\n");
+}
+
+void test_bmp_get_height(BMP* bmp) {
+    printf("test_bmp_get_height: ");
+    assert(bmp_get_height(bmp) == 2);
+    printf("PASSED\n");
+}
+
 /* This will trigger a valgrind error if failing */
 void test_bmp_close(BMP* bmp) {
     bmp_close(bmp);
@@ -60,6 +72,8 @@ int main() {
     /* Test public functions */
 
     BMP* bmp = test_bmp_open();
+    test_bmp_get_width(bmp);
+    test_bmp_get_height(bmp);
     test_bmp_close(bmp);
 
     return EXIT_SUCCESS;

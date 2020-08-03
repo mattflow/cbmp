@@ -50,6 +50,8 @@ typedef struct {
 
 BMP* bmp_open(char* filename);
 void bmp_close(BMP* bmp);
+int bmp_get_width(BMP* bmp);
+int bmp_get_height(BMP* bmp);
 
 /* Private functions */
 
@@ -115,7 +117,7 @@ FileHeader* _read_file_header(uint8_t* buffer) {
     if (!_is_valid_signature(signature)) {
         free(file_header);
         file_header = NULL;
-        fprintf(stderr, "%0x: Unsupported file type", signature);
+        fprintf(stderr, "%0x: Unsupported file type\n", signature);
         return NULL;
     }
     file_header->signature = signature;
@@ -199,7 +201,7 @@ BMP* _decode_buffer(uint8_t* buffer) {
         case 12:
         case 13:
         default:
-            fprintf(stderr, "%d: Compression type is not supported", bmp->dib_header->compression_method);
+            fprintf(stderr, "%d: Compression type is not supported\n", bmp->dib_header->compression_method);
             bmp_close(bmp);
             return NULL;
     }
@@ -215,13 +217,6 @@ void _free(void* ptr) {
 }
 
 /* Public implementations */
-
-void bmp_close(BMP* bmp) {
-    _free(bmp->file_header);
-    _free(bmp->dib_header);
-    _free(bmp->buffer);
-    _free(bmp);
-}
 
 BMP* bmp_open(char* filename) {
 
@@ -240,6 +235,21 @@ BMP* bmp_open(char* filename) {
     }
 
     return bmp;
+}
+
+int bmp_get_width(BMP* bmp) {
+    return bmp->dib_header->width;
+}
+
+int bmp_get_height(BMP* bmp) {
+    return bmp->dib_header->height;
+}
+
+void bmp_close(BMP* bmp) {
+    _free(bmp->file_header);
+    _free(bmp->dib_header);
+    _free(bmp->buffer);
+    _free(bmp);
 }
 
 #endif
