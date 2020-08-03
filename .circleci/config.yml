@@ -6,3 +6,8 @@ jobs:
       - image: gcc:10.2.0
     steps:
       - run: make test
+
+workflows:
+  test:
+    jobs:
+      - test
