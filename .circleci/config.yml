@@ -5,6 +5,7 @@ jobs:
     docker:
       - image: gcc:10.2.0
     steps:
+      - checkout
       - run: make test
 
 workflows:
