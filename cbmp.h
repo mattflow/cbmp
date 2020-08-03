@@ -115,6 +115,7 @@ FileHeader* _read_file_header(uint8_t* buffer) {
     if (!_is_valid_signature(signature)) {
         free(file_header);
         file_header = NULL;
+        fprintf(stderr, "%0x: Unsupported file type", signature);
         return NULL;
     }
     file_header->signature = signature;
@@ -157,6 +158,7 @@ DIBHeader* _read_dib_header(uint8_t* buffer) {
         case 108:
         case 124:
         default:
+            fprintf(stderr, "%d: BMP format not supported\n", header_size);
             return NULL;
     }
 
@@ -197,6 +199,7 @@ BMP* _decode_buffer(uint8_t* buffer) {
         case 12:
         case 13:
         default:
+            fprintf(stderr, "%d: Compression type is not supported", bmp->dib_header->compression_method);
             bmp_close(bmp);
             return NULL;
     }
