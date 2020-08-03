@@ -52,6 +52,11 @@ uint8_t* _get_file_buffer(char* filename) {
 
 /* Public functions */
 
+void bmp_close(BMP* bmp) {
+    free(bmp->buffer);
+    free(bmp);
+}
+
 BMP* bmp_open(char* filename) {
 
     uint8_t* buffer = _get_file_buffer(filename);
@@ -73,11 +78,6 @@ BMP* bmp_open(char* filename) {
     }
 
     return bmp;
-}
-
-void bmp_close(BMP* bmp) {
-    free(bmp->buffer);
-    free(bmp);
 }
 
 #endif
