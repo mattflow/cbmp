@@ -44,6 +44,7 @@ uint8_t* _get_file_buffer(char* filename) {
 
     if (fread_result != (size_t)size) {
         free(buffer);
+        buffer = NULL;
         return NULL;
     }
 
@@ -54,7 +55,9 @@ uint8_t* _get_file_buffer(char* filename) {
 
 void bmp_close(BMP* bmp) {
     free(bmp->buffer);
+    bmp->buffer = NULL;
     free(bmp);
+    bmp = NULL;
 }
 
 BMP* bmp_open(char* filename) {
