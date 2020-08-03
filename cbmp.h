@@ -74,6 +74,9 @@ BMP* bmp_open(char* filename) {
     return bmp;
 }
 
-
+void bmp_close(BMP* bmp) {
+    free(bmp->buffer);
+    free(bmp);
+}
 
 #endif

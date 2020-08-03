@@ -14,12 +14,12 @@ void test__get_file_buffer() {
     printf("PASSED\n");
 }
 
-void test_bmp_open() {
+BMP* test_bmp_open() {
     printf("test_bmp_open: ");
     BMP* bmp = bmp_open("input.bmp");
-    // assert(bmp->size == EXPECTED_SIZE);
-    // assert(bmp->width == EXPECTED_WIDTH);
-    // assert(bmp->height == EXPECTED_HEIGHT);
+    assert(bmp->size == EXPECTED_SIZE);
+    assert(bmp->width == EXPECTED_WIDTH);
+    assert(bmp->height == EXPECTED_HEIGHT);
 
     BMP* null_bmp = bmp_open("doesnt_exist.bmp");
     assert (null_bmp == NULL);
@@ -29,10 +29,21 @@ void test_bmp_open() {
     assert (not_a_bmp == NULL);
     assert (errno == EINVAL);
     printf("PASSED\n");
+
+    return bmp;
+}
+
+/* This will trigger a valgrind error if failing */
+void test_bmp_close(BMP* bmp) {
+    bmp_close(bmp);
 }
 
 int main() {
+    /* Test private functions */
     test__get_file_buffer();
-    test_bmp_open();
+
+    /* Test public functions */
+    BMP* bmp = test_bmp_open();
+    test_bmp_close(bmp);
     return EXIT_SUCCESS;
 }
