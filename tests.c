@@ -22,12 +22,10 @@ BMP* test_bmp_open() {
     /* assert(bmp->height == EXPECTED_HEIGHT); */
 
     BMP* null_bmp = bmp_open("doesnt_exist.bmp");
-    bmp_close(null_bmp);
     assert (null_bmp == NULL);
     assert (errno == ENOENT);
 
     BMP* not_a_bmp = bmp_open("input.txt");
-    bmp_close(not_a_bmp);
     assert (not_a_bmp == NULL);
     assert (errno == EINVAL);
     printf("PASSED\n");

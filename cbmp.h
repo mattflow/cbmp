@@ -68,6 +68,7 @@ BMP* bmp_open(char* filename) {
     if (bmp->buffer[0] != 'B' || bmp->buffer[1] != 'M') {
         /* Invalid argument */
         errno = EINVAL;
+        bmp_close(bmp);
         return NULL;
     }
 
