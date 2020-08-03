@@ -2,9 +2,12 @@ PUSH_COMMAND=cd $@ && make push
 
 default: all
 
-all: gcc
+all: gcc clang
 
 gcc:
 	$(PUSH_COMMAND)
 
-.PHONY: gcc
+clang:
+	$(PUSH_COMMAND)
+
+.PHONY: gcc clang
