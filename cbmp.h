@@ -117,7 +117,7 @@ FileHeader* _read_file_header(uint8_t* buffer) {
     if (!_is_valid_signature(signature)) {
         free(file_header);
         file_header = NULL;
-        fprintf(stderr, "%0x: Unsupported file type\n", signature);
+        fprintf(stderr, "0x%0x: Unsupported file type\n", signature);
         return NULL;
     }
     file_header->signature = signature;
