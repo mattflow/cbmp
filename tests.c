@@ -7,6 +7,8 @@
 #define EXPECTED_HEADER_SIZE 40
 #define EXPECTED_WIDTH 3
 #define EXPECTED_HEIGHT 2
+#define EXPECTED_COLOR_PLANES 1
+#define EXPECTED_BITS_PER_PIXEL 24
 
 void test__get_file_buffer() {
     printf("test__get_file_buffer: ");
@@ -29,6 +31,8 @@ BMP* test_bmp_open() {
     assert(bmp->header_size == EXPECTED_HEADER_SIZE);
     assert(bmp->width == EXPECTED_WIDTH);
     assert(bmp->height == EXPECTED_HEIGHT);
+    assert(bmp->color_planes == EXPECTED_COLOR_PLANES);
+    assert(bmp->bits_per_pixel == EXPECTED_BITS_PER_PIXEL);
 
     BMP* null_bmp = bmp_open("doesnt_exist.bmp");
     assert (null_bmp == NULL);

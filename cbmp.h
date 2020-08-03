@@ -15,8 +15,15 @@ typedef struct {
     int height;
     int offset;
     int header_size;
+    int color_planes;
+    int bits_per_pixel;
     uint8_t* buffer;
 } BMP;
+
+/* Public declarations */
+
+BMP* bmp_open(char* filename);
+void bmp_close(BMP* bmp);
 
 /* Private functions */
 
@@ -69,8 +76,37 @@ BMP* _decode_buffer(uint8_t* buffer) {
     bmp->size = _read_block(buffer, 2, 4);
     bmp->offset = _read_block(buffer, 10, 4);
     bmp->header_size = _read_block(buffer, 14, 4);
-    bmp->width = _read_block(buffer, 18, 4);
-    bmp->height = _read_block(buffer, 22, 4);
+    switch(bmp->header_size) {
+        case 12: /* BITMAPCOREHEADER */
+            bmp->width = _read_block(buffer, 18, 2);
+            bmp->width = _read_block(buffer, 20, 2);
+            break;
+        case 16: /* BITMAPCOREHEADER2 */
+        case 64: /* BITMAPCOREHEADER2 fallthrough */
+            bmp->width = _read_block(buffer, 18, 4);
+            bmp->height = _read_block(buffer, 22, 4);
+            bmp->color_planes = _read_block(buffer, 26, 2);
+            bmp->bits_per_pixel = _read_block(buffer, 28, 2);
+            break;
+        case 40: /* BITMAPINFOHEADER */
+            bmp->width = _read_block(buffer, 18, 4);
+            bmp->height = _read_block(buffer, 22, 4);
+            bmp->color_planes = _read_block(buffer, 26, 2);
+            bmp->bits_per_pixel = _read_block(buffer, 28, 2);
+            break;
+        case 52:
+            break;
+        case 56:
+            break;
+        case 108:
+            break;
+        case 124:
+            break;
+        default:
+            errno = EINVAL;
+            bmp_close(bmp);
+            return NULL;
+    }
     return bmp;
 }
 
@@ -87,7 +123,7 @@ int _is_valid_header(int header_field) {
         || header_field == 0x5054; /* PT */
 }
 
-/* Public functions */
+/* Public implementations */
 
 void bmp_close(BMP* bmp) {
     free(bmp->buffer);
@@ -115,6 +151,10 @@ BMP* bmp_open(char* filename) {
     }
 
     BMP* bmp = _decode_buffer(buffer);
+
+    if (!bmp) {
+        return NULL;
+    }
 
     return bmp;
 }
