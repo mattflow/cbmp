@@ -2,6 +2,9 @@ MAIN=tests
 
 default: $(MAIN)
 
+memory: $(MAIN)
+	valgrind --leak-check=full --error-exitcode=1 ./$(MAIN)
+
 test: $(MAIN)
 	./$(MAIN)
 
