@@ -56,7 +56,7 @@ BMP* bmp_open(char* filename) {
 
     uint8_t* buffer = _get_file_buffer(filename);
 
-    /* There was a problem reading the file */
+    /* There was a problem reading the file. errno was set */
     if (!buffer) {
         return NULL;
     }

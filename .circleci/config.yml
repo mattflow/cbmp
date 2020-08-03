@@ -2,7 +2,7 @@ version: 2.1
 
 jobs:
   docker:
-    image: gcc:10.2.0
+    - image: gcc:10.2.0
   build:
     steps:
       - run: make test
