@@ -1,13 +1,13 @@
 version: 2.1
 
 jobs:
-  test:
+  tests:
     docker:
       - image: mattflow/cbmp-docker-primary:10.2.0
     steps:
       - checkout
       - run: make test
-  memory:
+  memory-check:
     docker:
       - image: mattflow/cbmp-docker-primary:10.2.0
     steps:
@@ -17,5 +17,5 @@ jobs:
 workflows:
   test:
     jobs:
-      - test
-      - memory
+      - tests
+      - memory-check

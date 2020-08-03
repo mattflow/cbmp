@@ -25,7 +25,7 @@ void test_bmp_open() {
     assert (null_bmp == NULL);
     assert (errno == ENOENT);
 
-    BMP* not_a_bmp = bmp_open("README.md");
+    BMP* not_a_bmp = bmp_open("input.txt");
     assert (not_a_bmp == NULL);
     assert (errno == EINVAL);
     printf("PASSED\n");
