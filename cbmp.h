@@ -65,6 +65,7 @@ int _read_block(uint8_t* buffer, int offset, int size) {
 
 BMP* _decode_buffer(uint8_t* buffer) {
     BMP* bmp = malloc(sizeof(BMP));
+    bmp->buffer = buffer;
     bmp->size = _read_block(buffer, 2, 4);
     bmp->offset = _read_block(buffer, 10, 4);
     bmp->header_size = _read_block(buffer, 14, 4);
@@ -104,6 +105,7 @@ BMP* bmp_open(char* filename) {
         header_field != 0x4943 && /* IC */
         header_field != 0x5054) { /* PT */
             free(buffer);
+            buffer = NULL;
             errno = EINVAL;
             return NULL;
     }
