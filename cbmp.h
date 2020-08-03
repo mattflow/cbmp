@@ -78,6 +78,15 @@ int _get_header_field(uint8_t* buffer) {
     return (buffer[0] << 8) | buffer[1];
 }
 
+int _is_valid_header(int header_field) {
+    return header_field == 0x424d  /* BM */
+        || header_field == 0x4241  /* BA */
+        || header_field == 0x4349  /* CI */
+        || header_field == 0x4350  /* CP */
+        || header_field == 0x4943  /* IC */
+        || header_field == 0x5054; /* PT */
+}
+
 /* Public functions */
 
 void bmp_close(BMP* bmp) {
@@ -98,16 +107,11 @@ BMP* bmp_open(char* filename) {
 
     int header_field = _get_header_field(buffer);
 
-    if (header_field != 0x424d && /* BM */
-        header_field != 0x4241 && /* BA */
-        header_field != 0x4349 && /* CI */
-        header_field != 0x4350 && /* CP */
-        header_field != 0x4943 && /* IC */
-        header_field != 0x5054) { /* PT */
-            free(buffer);
-            buffer = NULL;
-            errno = EINVAL;
-            return NULL;
+    if (!_is_valid_header(header_field)) {
+        free(buffer);
+        buffer = NULL;
+        errno = EINVAL;
+        return NULL;
     }
 
     BMP* bmp = _decode_buffer(buffer);
