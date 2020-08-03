@@ -40,10 +40,10 @@ uint8_t* _get_file_buffer(char* filename) {
     rewind(file);
     uint8_t* buffer = (uint8_t*)malloc(sizeof(uint8_t) * size);
     size_t fread_result = fread(buffer, sizeof(uint8_t), size, file);
+    fclose(file);
 
     if (fread_result != (size_t)size) {
         free(buffer);
-        fclose(file);
         return NULL;
     }
 
