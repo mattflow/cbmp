@@ -9,9 +9,9 @@
 void test_bmp_open() {
     printf("test_bmp_open: ");
     BMP* bmp = bmp_open("input.bmp");
-    /* assert(bmp->size == EXPECTED_SIZE); */
-    /* assert(bmp->width == EXPECTED_WIDTH); */
-    /* assert(bmp->height == EXPECTED_HEIGHT); */
+    assert(bmp->size == EXPECTED_SIZE);
+    assert(bmp->width == EXPECTED_WIDTH);
+    assert(bmp->height == EXPECTED_HEIGHT);
 
     BMP* null_bmp = bmp_open("doesnt_exist.bmp");
     assert (null_bmp == NULL);
