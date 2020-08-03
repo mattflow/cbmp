@@ -3,19 +3,19 @@ version: 2.1
 jobs:
   gcc-10:
     docker:
-      - image: mattflow/cbmp-primary:10
+      - image: mattflow/cbmp-gcc:10
     steps:
       - checkout
       - run: make tests-full
   gcc-9:
     docker:
-      - image: mattflow/cbmp-primary:9
+      - image: mattflow/cbmp-gcc:9
     steps:
       - checkout
       - run: make tests-full
   gcc-8:
     docker:
-      - image: mattflow/cbmp-primary:8
+      - image: mattflow/cbmp-gcc:8
     steps:
       - checkout
       - run: make tests-full

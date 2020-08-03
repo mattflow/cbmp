@@ -1,5 +1,5 @@
 ORGANIZATION=mattflow
-IMAGE_NAME=cbmp-primary
+IMAGE_NAME=cbmp-gcc
 
 BUILD_COMMAND=docker build -t $(ORGANIZATION)/$(IMAGE_NAME):$@ --build-arg GCC_VERSION=$@ .
 TAG_COMMAND=docker tag $(ORGANIZATION)/$(IMAGE_NAME):$^ $(ORGANIZATION)/$(IMAGE_NAME):$@
