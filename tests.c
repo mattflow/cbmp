@@ -3,12 +3,13 @@
 #include <string.h>
 #include "cbmp.h"
 
-#define EXPECTED_SIZE 78
-#define EXPECTED_HEADER_SIZE 40
-#define EXPECTED_WIDTH 3
-#define EXPECTED_HEIGHT 2
-#define EXPECTED_COLOR_PLANES 1
-#define EXPECTED_BITS_PER_PIXEL 24
+#define DEBUG 1
+
+#if DEBUG
+#define LOG(X) printf("%d\n", X);
+#else
+#define LOG(X)
+#endif
 
 void test__get_file_buffer() {
     printf("test__get_file_buffer: ");
@@ -26,23 +27,23 @@ void test__get_file_buffer() {
 
 BMP* test_bmp_open() {
     printf("test_bmp_open: ");
-    BMP* bmp = bmp_open("input.bmp");
-    assert(bmp->size == EXPECTED_SIZE);
-    assert(bmp->header_size == EXPECTED_HEADER_SIZE);
-    assert(bmp->width == EXPECTED_WIDTH);
-    assert(bmp->height == EXPECTED_HEIGHT);
-    assert(bmp->color_planes == EXPECTED_COLOR_PLANES);
-    assert(bmp->bits_per_pixel == EXPECTED_BITS_PER_PIXEL);
 
     BMP* null_bmp = bmp_open("doesnt_exist.bmp");
-    assert (null_bmp == NULL);
-    assert (errno == ENOENT);
+    assert(null_bmp == NULL);
+    assert(errno == ENOENT);
 
     BMP* not_a_bmp = bmp_open("input.txt");
-    assert (not_a_bmp == NULL);
-    assert (errno == EINVAL);
-    printf("PASSED\n");
+    assert(not_a_bmp == NULL);
+    assert(errno == EINVAL);
 
+    BMP* bmp = bmp_open("input.bmp");
+    assert(bmp->file_header->signature == 0x424d);
+    assert(bmp->file_header->file_size == 78);
+    assert(bmp->file_header->reserved_1 == 0);
+    assert(bmp->file_header->reserved_2 == 0);
+    assert(bmp->file_header->pixel_offset == 54);
+
+    printf("PASSED\n");
     return bmp;
 }
 
