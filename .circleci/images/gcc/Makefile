@@ -1,0 +1,40 @@
+ORGANIZATION=mattflow
+IMAGE_NAME=cbmp-gcc
+
+BUILD_COMMAND=docker build -t $(ORGANIZATION)/$(IMAGE_NAME):$@ --build-arg GCC_VERSION=$@ .
+TAG_COMMAND=docker tag $(ORGANIZATION)/$(IMAGE_NAME):$^ $(ORGANIZATION)/$(IMAGE_NAME):$@
+
+push: all
+	docker push $(ORGANIZATION)/$(IMAGE_NAME)
+
+all: latest 9 8
+
+latest: 10
+	$(TAG_COMMAND)
+
+10: 10.2
+	$(TAG_COMMAND)
+
+10.2: 10.2.0
+	$(TAG_COMMAND)
+
+10.2.0:
+	$(BUILD_COMMAND)
+
+9: 9.3
+	$(TAG_COMMAND)
+
+9.3: 9.3.0
+	$(TAG_COMMAND)
+
+9.3.0:
+	$(BUILD_COMMAND)
+
+8: 8.4
+	$(TAG_COMMAND)
+
+8.4: 8.4.0
+	$(TAG_COMMAND)
+
+8.4.0:
+	$(BUILD_COMMAND)
