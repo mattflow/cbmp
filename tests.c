@@ -9,9 +9,8 @@
 
 void test__get_file_buffer() {
     printf("test__get_file_buffer: ");
-    char* buffer = (char*)_get_file_buffer("input.txt");
-    *buffer++ = '\0';
     char* expected = "test";
+    char* buffer = (char*)_get_file_buffer("input.txt");
     assert(strcmp(buffer, expected) == 0);
     free(buffer);
     printf("PASSED\n");
