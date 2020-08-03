@@ -66,8 +66,8 @@ BMP* bmp_open(char* filename) {
 
     /* First two bytes of BMP files are B and M respectively */
     if (bmp->buffer[0] != 'B' || bmp->buffer[1] != 'M') {
-        /* Inappropriate file type or format */
-        errno = EFTYPE;
+        /* Invalid argument */
+        errno = EINVAL;
         return NULL;
     }
 
