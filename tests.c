@@ -10,8 +10,12 @@
 void test__get_file_buffer() {
     printf("test__get_file_buffer: ");
     char* expected = "test";
-    char* buffer = strdup((char*)_get_file_buffer("input.txt"));
-    assert(strcmp(buffer, expected) == 0);
+    int expected_length = strlen(expected);
+    char* buffer = (char*)_get_file_buffer("input.txt");
+    int i;
+    for (i = 0; i < expected_length; i++) {
+        assert(buffer[i] == expected[i]);
+    }
     free(buffer);
     buffer = NULL;
     printf("PASSED\n");
