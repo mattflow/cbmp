@@ -33,9 +33,7 @@ jobs:
 
   memory-check:
     needs: build
-    runs:
-      using: docker
-      image: .github/images/valgrind.Dockerfile
+    image: mattflow/valgrind:latest
     
     steps:
     - uses: actions/download-artifact@v2
