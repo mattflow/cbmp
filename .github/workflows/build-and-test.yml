@@ -28,3 +28,5 @@ jobs:
       run: chmod +x tests
     - name: Run tests
       run: ./tests
+    - name: Run memory check
+      run: valgrind ./tests
