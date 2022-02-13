@@ -17,6 +17,7 @@ jobs:
         path: tests
   
   test:
+    needs: build
     runs-on: ubuntu-latest
     
     steps:
