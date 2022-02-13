@@ -30,5 +30,16 @@ jobs:
       run: chmod +x tests
     - name: Run tests
       run: ./tests
-    - name: Run memory check
-      run: valgrind ./tests
+
+  memory-check:
+    needs: build
+    runs:
+      using: docker
+      image: .github/images/valgrind.Dockerfile
+    
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: tests-executable
+    - name: valgrind
+      run: valgrind tests
