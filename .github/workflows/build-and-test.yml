@@ -33,8 +33,8 @@ jobs:
 
   memory-check:
     needs: build
-    container:
-      image: mattflow/valgrind:latest
+    runs-on: ubuntu-latest
+    container: mattflow/valgrind:latest
     
     steps:
     - uses: actions/download-artifact@v2
