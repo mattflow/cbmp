@@ -24,5 +24,7 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: tests-executable
+    - name: Add execute permissions
+      run: chmod +x tests
     - name: Run tests
       run: ./tests
