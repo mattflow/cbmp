@@ -179,16 +179,15 @@ unsigned int _get_int_from_buffer(unsigned int bytes,
                                   unsigned int offset, 
                                   unsigned char* buffer)
 {
-    unsigned char* _buffer = (unsigned char*) malloc(bytes * sizeof(unsigned char));
+    unsigned int value = 0;
+    int i;
 
-    unsigned int i;
-    for (i = 0; i < bytes; i++)
+    for (i = bytes - 1; i >= 0; --i)
     {
-        _buffer[i] = buffer[i + offset];
+        value <<= 8;
+        value += buffer[i + offset];
     }
 
-    unsigned int value = *(unsigned int*) _buffer;
-    free(_buffer);
     return value;
 }
 
