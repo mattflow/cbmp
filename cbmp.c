@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include "cbmp.h"
 
 // Constants
@@ -23,9 +24,14 @@
 #define DEPTH_BYTES 2
 #define DEPTH_OFFSET 28
 
+// Smallest file we can safely parse: every header field we read lives
+// below this offset (the last is depth at bytes 28-29).
+#define MIN_HEADER_BYTES (DEPTH_OFFSET + DEPTH_BYTES)
+
 // Private function declarations
 
 void _throw_error(char* message);
+void _validate_dimensions(BMP* bmp);
 unsigned int _get_int_from_buffer(unsigned int bytes, 
                                   unsigned int offset, 
                                   unsigned char* buffer);
@@ -55,9 +61,20 @@ BMP* bopen(char* file_path)
     }
 
     BMP* bmp = (BMP*) malloc(sizeof(BMP));
+    if (bmp == NULL)
+    {
+        _throw_error("Failed to allocate memory");
+    }
     bmp->file_byte_number = _get_file_byte_number(fp);
     bmp->file_byte_contents = _get_file_byte_contents(fp, bmp->file_byte_number);
     fclose(fp);
+
+    // Reject files too small to hold the header fields we read below,
+    // otherwise _validate_file_type and the header getters read out of bounds.
+    if (bmp->file_byte_number < MIN_HEADER_BYTES)
+    {
+        _throw_error("File too small to be a valid BMP");
+    }
 
     if(!_validate_file_type(bmp->file_byte_contents))
     {
@@ -75,6 +92,10 @@ BMP* bopen(char* file_path)
         _throw_error("Invalid file depth");
     }
 
+    // Reject dimensions that would overflow the pixel allocation or point
+    // the pixel reads past the end of the file (CWE-190 / CWE-122 / CWE-126).
+    _validate_dimensions(bmp);
+
     _populate_pixel_array(bmp);
 
     return bmp;
@@ -83,6 +104,10 @@ BMP* bopen(char* file_path)
 BMP* b_deep_copy(BMP* to_copy)
 {
     BMP* copy = (BMP*) malloc(sizeof(BMP));
+    if (copy == NULL)
+    {
+        _throw_error("Failed to allocate memory");
+    }
     copy->file_byte_number = to_copy->file_byte_number;
     copy->pixel_array_start = to_copy->pixel_array_start;
     copy->width = to_copy->width;
@@ -90,6 +115,10 @@ BMP* b_deep_copy(BMP* to_copy)
     copy->depth = to_copy->depth;
 
     copy->file_byte_contents = (unsigned char*) malloc(copy->file_byte_number * sizeof(unsigned char));
+    if (copy->file_byte_contents == NULL)
+    {
+        _throw_error("Failed to allocate memory");
+    }
 
     unsigned int i;
     for (i = 0; i < copy->file_byte_number; i++)
@@ -97,7 +126,13 @@ BMP* b_deep_copy(BMP* to_copy)
         copy->file_byte_contents[i] = to_copy->file_byte_contents[i];
     }
 
+    // Dimensions were already validated when to_copy was opened, so this
+    // product cannot overflow; still guard the allocation failing.
     copy->pixels = (pixel*) malloc(copy->width * copy->height * sizeof(pixel));
+    if (copy->pixels == NULL)
+    {
+        _throw_error("Failed to allocate memory");
+    }
 
     unsigned int x, y;
     int index;
@@ -203,6 +238,10 @@ unsigned int _get_file_byte_number(FILE* fp)
 unsigned char* _get_file_byte_contents(FILE* fp, unsigned int file_byte_number)
 {
     unsigned char* buffer = (unsigned char*) malloc(file_byte_number * sizeof(char));
+    if (buffer == NULL)
+    {
+        _throw_error("Failed to allocate memory");
+    }
     unsigned int result = fread(buffer, 1, file_byte_number, fp);
 
     if (result != file_byte_number)
@@ -265,9 +304,54 @@ void _update_file_byte_contents(BMP* bmp, int index, int offset, int channel)
     bmp->file_byte_contents[offset + channel] = value;
 }
 
+void _validate_dimensions(BMP* bmp)
+{
+    if (bmp->width == 0 || bmp->height == 0)
+    {
+        _throw_error("Invalid image dimensions");
+    }
+
+    size_t width = bmp->width;
+    size_t height = bmp->height;
+    size_t depth = bmp->depth;
+    size_t start = bmp->pixel_array_start;
+
+    // width * height * sizeof(pixel) must not overflow size_t (CWE-190).
+    // Checking in size_t also covers the 32-bit unsigned int wrap that the
+    // original `width * height` multiply suffered from.
+    if (width > SIZE_MAX / height ||
+        width * height > SIZE_MAX / sizeof(pixel))
+    {
+        _throw_error("Image dimensions too large");
+    }
+
+    // Each row is padded to a multiple of 4 bytes: ((depth*width + 31)/32)*4.
+    // Guard the multiply so the bounds check below cannot itself overflow.
+    if (width > (SIZE_MAX - 31) / depth)
+    {
+        _throw_error("Image dimensions too large");
+    }
+    size_t row_size = ((depth * width + 31) / 32) * 4;
+
+    // Every pixel read in _map stays below start + row_size*height, so require
+    // the file to actually hold that many bytes (CWE-126 out-of-bounds read).
+    if (row_size != 0 && height > (SIZE_MAX - start) / row_size)
+    {
+        _throw_error("Image dimensions too large");
+    }
+    if (start + row_size * height > bmp->file_byte_number)
+    {
+        _throw_error("Pixel data extends past end of file");
+    }
+}
+
 void _populate_pixel_array(BMP* bmp)
 {
     bmp->pixels = (pixel*) malloc(bmp->width * bmp->height * sizeof(pixel));
+    if (bmp->pixels == NULL)
+    {
+        _throw_error("Failed to allocate memory");
+    }
     _map(bmp, _get_pixel);
 }
 

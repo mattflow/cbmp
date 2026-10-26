@@ -2,3 +2,9 @@ build
 compile_commands.json
 cmake-build-debug
 .idea
+
+# Build artifacts
+*.o
+*.dSYM/
+tests/test_security
+tests/*.bmp
