@@ -6,6 +6,14 @@ C Library to read, manipulate, and save BMP images.
 
 Image must be a valid BMP format with 24 or 32 bit pixel data.
 
+> **Note:** This is an old personal project and is not actively maintained. It
+> was written for learning and for use with trusted input — it does not meet
+> production standards and is not hardened against malformed or malicious files.
+> For production use, prefer a maintained image library such as
+> [stb_image](https://github.com/nothings/stb),
+> [SDL_image](https://github.com/libsdl-org/SDL_image), or
+> [libvips](https://github.com/libvips/libvips).
+
 ## Usage
 
 In order to use the library, move `cbmp.c` and `cbmp.h` into your project.
